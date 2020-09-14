@@ -1,0 +1,14 @@
+{
+  "author": "Henrik Stanley Mortensen",
+  "main": "./server.ps1",
+  "version": "1.0.0",
+  "name": "pswebserver",
+  "description": "sample web server app",
+  "license": "MIT",
+  "scripts": {
+    "start": "./server.ps1",
+    "install": "yarn install --force --ignore-scripts --modules-folder pode_modules",
+    "build": "psake",
+    "test": "invoke-pester ./tests/*.ps1"
+  }
+}
