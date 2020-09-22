@@ -24,6 +24,8 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/builds", GetBuilds)
 
+	r.Use(corsHandler(r))
+
 	println("HTTP server listening on :8080")
 	if err := http.ListenAndServe(":8080", handlers.LoggingHandler(os.Stdout, handlers.CompressHandler(r))); err != nil {
 		log.Fatal(err)
@@ -79,6 +81,25 @@ func GetBuilds(w http.ResponseWriter, r *http.Request) {
 
 func encodeToBase64(val string) string {
 	return base64.StdEncoding.EncodeToString([]byte(val))
+}
+
+func corsHandler(r *mux.Router) mux.MiddlewareFunc {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+			println(req.Host)
+
+			switch req.Host {
+			case "backstage.dfds.cloud":
+				w.Header().Set("Access-Control-Allow-Origin", "backstage.dfds.cloud")
+			case "localhost:8080":
+				w.Header().Set("Access-Control-Allow-Origin", "localhost:8080")
+			case "localhost:3000":
+				w.Header().Set("Access-Control-Allow-Origin", "localhost:8080")
+			}
+
+			next.ServeHTTP(w, req)
+		})
+	}
 }
 
 type getBuildRequest struct {
