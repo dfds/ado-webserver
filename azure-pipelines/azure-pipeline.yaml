@@ -28,7 +28,7 @@ variables:
   - name: 'k8s-service-connection'
     value: 'Kubernetes-Hellman'
   - name: 'kubernetes-namespace'
-    value: 'mynamespace'
+    value: 'backstage'
 
 stages:
 # Continuous Integration Stage
@@ -43,15 +43,15 @@ stages:
           command: 'build'
           buildContext: ''
           Dockerfile: 'Dockerfile'
-          arguments: '-t my-service'
+          arguments: '-t ado-webserver'
   
       - task: ECRPushImage@1
         inputs:
           awsCredentials: 'Shared-Prod ECR-Push'
           regionName: 'eu-central-1'
           imageSource: 'imagename'
-          sourceImageName: 'my-service'
-          repositoryName: 'ded/my-service'
+          sourceImageName: 'ado-webserver'
+          repositoryName: 'ded/ado-webserver'
           pushTag: '$(Build.BuildId)'
       
       # Upload Kubernetes manifests to current artifact Pipeline from folder /k8s
@@ -67,24 +67,24 @@ stages:
   condition: and(succeeded('CI'), eq(variables['Build.SourceBranch'], 'refs/heads/master')) 
 
 # Deployment job for kubernetes deployments    
-  - deployment: K8s
-    displayName: 'Deploy to Kubernetes'
-    environment: 'Hellman'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-            # Download manifest from current artifacts pipeline
-            - download: current
-                artifact: manifests
-                displayName: 'Download Artifact: manifests'
+- deployment: K8s
+  displayName: 'Deploy to Kubernetes'
+  environment: 'Hellman'
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+          # Download manifest from current artifacts pipeline
+          - download: current
+            artifact: manifests
+            displayName: 'Download Artifact: manifests'
 
-            # Apply Kubernetes manifests
-            - task: Kubernetes@1
-                displayName: 'Apply manifests'
-                inputs:
-                  connectionType: Kubernetes Service Connection
-                  kubernetesServiceEndpoint: '$(k8s-service-connection)'
-                  namespace: '$(kubernetes-namespace)'
-                  command: apply
-                  arguments: '-f $(Pipeline.Workspace)/manifests/'
+          # Apply Kubernetes manifests
+          - task: Kubernetes@1
+            displayName: 'Apply manifests'
+            inputs:
+              connectionType: Kubernetes Service Connection
+              kubernetesServiceEndpoint: '$(k8s-service-connection)'
+              namespace: '$(kubernetes-namespace)'
+              command: apply
+              arguments: '-f $(Pipeline.Workspace)/manifests/'
