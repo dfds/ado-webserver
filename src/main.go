@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
@@ -21,7 +22,7 @@ func main() {
 	}
 
 	r := mux.NewRouter()
-	r.HandleFunc("/builds", GetBuilds)
+	r.Handle("/builds", handlers.LoggingHandler(os.Stdout, http.HandlerFunc(GetBuilds)))
 
 	println("HTTP server listening on :8080")
 	if err := http.ListenAndServe(":8080", r); err != nil {
@@ -35,8 +36,6 @@ func GetBuilds(w http.ResponseWriter, r *http.Request) {
 		log.Println("Unable to read request body, sending 500 response")
 		w.WriteHeader(500)
 	}
-
-	println(string(rawBody))
 
 	reqPayload := getBuildRequest{}
 	err = json.Unmarshal(rawBody, &reqPayload)
@@ -75,7 +74,6 @@ func GetBuilds(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 	}
 
-	println(string(respRawBody))
 	w.Write(respRawBody)
 }
 
