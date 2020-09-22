@@ -86,8 +86,6 @@ func encodeToBase64(val string) string {
 func corsHandler(r *mux.Router) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-			println(req.Host)
-
 			switch req.Host {
 			case "backstage.dfds.cloud":
 				w.Header().Set("Access-Control-Allow-Origin", "backstage.dfds.cloud")
