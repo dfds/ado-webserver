@@ -183,7 +183,7 @@ func corsHandler(r *mux.Router) mux.MiddlewareFunc {
 			case "localhost:8080":
 				w.Header().Set("Access-Control-Allow-Origin", "localhost:8080")
 			case "localhost:3000":
-				w.Header().Set("Access-Control-Allow-Origin", "localhost:8080")
+				w.Header().Set("Access-Control-Allow-Origin", "localhost:3000")
 			}
 
 			next.ServeHTTP(w, req)
