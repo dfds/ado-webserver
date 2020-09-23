@@ -59,32 +59,32 @@ stages:
         artifact: manifests
         displayName: 'Publish Artifact: manifests'
 
-# Continuous Deployment Stage 
 - stage: CD
   displayName: 'Continuous Deployment'
   dependsOn: CI
   # Run CD only if CI succeeds and if pipeline runs from Master branch
   condition: and(succeeded('CI'), eq(variables['Build.SourceBranch'], 'refs/heads/master')) 
 
-# Deployment job for kubernetes deployments    
-- deployment: K8s
-  displayName: 'Deploy to Kubernetes'
-  environment: 'Hellman'
-  strategy:
-    runOnce:
-      deploy:
-        steps:
-          # Download manifest from current artifacts pipeline
-          - download: current
-            artifact: manifests
-            displayName: 'Download Artifact: manifests'
+  jobs:  
+  # Deployment job for kubernetes deployments
+  - deployment: K8s
+    displayName: 'Deploy to Kubernetes'
+    environment: 'Hellman'
+    strategy: 
+      runOnce:
+        deploy:
+          steps:
+            # Download manifest from current artifacts pipeline
+            - download: current
+              artifact: manifests
+              displayName: 'Download Artifact: manifests'
 
-          # Apply Kubernetes manifests
-          - task: Kubernetes@1
-            displayName: 'Apply manifests'
-            inputs:
-              connectionType: Kubernetes Service Connection
-              kubernetesServiceEndpoint: '$(k8s-service-connection)'
-              namespace: '$(kubernetes-namespace)'
-              command: apply
-              arguments: '-f $(Pipeline.Workspace)/manifests/'
+            # Apply Kubernetes manifests
+            - task: Kubernetes@1
+              displayName: 'Apply manifests'
+              inputs:
+                connectionType: Kubernetes Service Connection
+                kubernetesServiceEndpoint: '$(k8s-service-connection)'
+                namespace: '$(kubernetes-namespace)'
+                command: apply
+                arguments: '-f $(Pipeline.Workspace)/manifests/'
