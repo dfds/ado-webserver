@@ -79,6 +79,15 @@ stages:
               artifact: manifests
               displayName: 'Download Artifact: manifests'
 
+            # Replace token values in yaml files with pipeline variables
+            - task: qetza.replacetokens.replacetokens-task.replacetokens@3
+              displayName: 'Replace tokens in yaml files'
+              inputs:
+                rootDirectory: '$(Pipeline.Workspace)/manifests/'
+                targetFiles: '*.yaml'
+                tokenPrefix: '$('
+                tokenSuffix: ')'
+
             # Apply Kubernetes manifests
             - task: Kubernetes@1
               displayName: 'Apply manifests'
