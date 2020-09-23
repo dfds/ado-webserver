@@ -74,6 +74,7 @@ func GetBuilds(w http.ResponseWriter, r *http.Request) {
 	// Set necessary API request headers
 	adoReq.Header.Set("Authorization", fmt.Sprintf("Basic %s", encodeToBase64(token)))
 	adoReq.Header.Set("Content-Type", "application/json")
+	adoReq.Header.Set("Access-Control-Allow-Credentials", "true")
 	adoReq.URL.Query().Set("queryOrder", "startTimeDescending")
 	adoReq.URL.Query().Set("api-version", ADO_APIVERSION)
 
@@ -181,7 +182,7 @@ func corsHandler(r *mux.Router) mux.MiddlewareFunc {
 			case "http://backstage.dfds.cloud":
 				w.Header().Set("Access-Control-Allow-Origin", "https://backstage.dfds.cloud")
 			case "http://localhost:7000":
-				w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080")
+				w.Header().Set("Access-Control-Allow-Origin", "http://localhost:7000")
 			case "http://localhost:3000":
 				w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 			default:
