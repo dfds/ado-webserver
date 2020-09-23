@@ -1,14 +1,15 @@
-FROM mcr.microsoft.com/powershell:lts-alpine-3.10
+FROM golang:alpine as build
 
-# Install dependencies
-RUN pwsh -c "Install-Module Pode -Force; Install-Module AWSPowerShell.NetCore -Force"
+COPY src/ /src
 
-RUN mkdir /webserver
+WORKDIR /src
 
-COPY src/ /webserver/
+RUN mkdir -p /app/dist && go build -i -o /app/dist/ado_server
 
-WORKDIR /webserver
+FROM golang:alpine
+
+COPY --from=build /app/dist/ado_server /app/ado_server
 
 EXPOSE 8080
 
-ENTRYPOINT ["pwsh", "-File", "./Webserver.ps1"]
+ENTRYPOINT ["/app/ado_server"]
