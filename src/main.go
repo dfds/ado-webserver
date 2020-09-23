@@ -178,14 +178,14 @@ func corsHandler(r *mux.Router) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			switch req.Header.Get("origin") {
-			case "backstage.dfds.cloud":
-				w.Header().Set("Access-Control-Allow-Origin", "backstage.dfds.cloud")
-			case "localhost:8080":
-				w.Header().Set("Access-Control-Allow-Origin", "localhost:8080")
-			case "localhost:3000":
-				w.Header().Set("Access-Control-Allow-Origin", "localhost:3000")
+			case "http://backstage.dfds.cloud":
+				w.Header().Set("Access-Control-Allow-Origin", "https://backstage.dfds.cloud")
+			case "http://localhost:7000":
+				w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080")
+			case "http://localhost:3000":
+				w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 			default:
-				w.Header().Set("Access-Control-Allow-Origin", "backstage.dfds.cloud")
+				w.Header().Set("Access-Control-Allow-Origin", "https://backstage.dfds.cloud")
 			}
 
 			next.ServeHTTP(w, req)
