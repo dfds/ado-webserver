@@ -28,8 +28,8 @@ spec:
             memory: "128Mi"
             cpu: "500m"
           env:
-            - name: ADO_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: ado-token
-                  key: ado-token
+          - name: ADO_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: ado-token
+                key: ado-token
