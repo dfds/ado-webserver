@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ado-webserver
+  annotations:
+    traefik.frontend.rule.type: PathPrefixStrip
+  labels:
+    app: ado-webserver
+    component: ingress
+spec:
+  rules:
+  - host: backstage.dfds.cloud
+    http:
+      paths:
+      - backend:
+          serviceName: ado-webserver
+          servicePort: web
+        path: /ado/builds
