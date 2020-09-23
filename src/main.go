@@ -74,7 +74,6 @@ func GetBuilds(w http.ResponseWriter, r *http.Request) {
 	// Set necessary API request headers
 	adoReq.Header.Set("Authorization", fmt.Sprintf("Basic %s", encodeToBase64(token)))
 	adoReq.Header.Set("Content-Type", "application/json")
-	adoReq.Header.Set("Access-Control-Allow-Credentials", "true")
 	adoReq.URL.Query().Set("queryOrder", "startTimeDescending")
 	adoReq.URL.Query().Set("api-version", ADO_APIVERSION)
 
@@ -107,6 +106,7 @@ func GetBuilds(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 	}
 
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	// Return API response
 	w.Write(payload)
 }
