@@ -14,8 +14,11 @@ func EncodeToBase64(val string) string {
 	return base64.StdEncoding.EncodeToString([]byte(val))
 }
 
-func TransformBuildsApiResponse(rawResp []byte) ([]types.SortedBuildResponse, error) {
+func TransformBuildsApiResponse(rawResp []byte) ([]types.SortedBuildResponse, error) {	
 	parsed := types.GetBuildResponse{}
+
+	println(string(rawResp));
+
 	err := json.Unmarshal(rawResp, &parsed)
 	if err != nil {
 		return nil, errors.New("unable to parse JSON response")

@@ -49,9 +49,11 @@ func GetBuildsHandler(w http.ResponseWriter, r *http.Request) {
 	var token = identity.AcquireTokenClientSecret()
 
 	// Set necessary API request headers
-	adoReq.Header.Set("Authorization", fmt.Sprintf("Basic %s", helpers.EncodeToBase64(token)))
+	adoReq.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 	adoReq.Header.Set("Content-Type", "application/json")
-	adoReq.URL.Query().Set("queryOrder", "startTimeDescending")
+	adoReq.Header.Set("X-TFS-FedAuthRedirect", "Suppress")
+	
+	adoReq.URL.Query().Set("queryOrder", "startTimeDescending")	
 	adoReq.URL.Query().Set("api-version", ADO_APIVERSION)
 
 	// Send API request
