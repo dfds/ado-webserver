@@ -8,7 +8,7 @@ import (
 const authority = "https://login.microsoftonline.com/73a99466-ad05-4221-9f90-e7142aa2f6c1/oauth2/v2.0/authorize"
 const clientId = "824ce29e-a0bb-4ad5-9d29-90664358f3a2"
 const notSoSecretSecret = "AxxIG_4O6feYwj_ueCN-6-ca8rN24U52sN"
-var scopes []string = []string{"user.read"}
+var scopes []string = []string{"https://graph.microsoft.com/.default"}
 
 func tryClientSecretFlow(confidentialClientApp *msalgo.ConfidentialClientApplication) {
 	clientSecretParams := msalgo.CreateAcquireTokenClientCredentialParameters(scopes)
