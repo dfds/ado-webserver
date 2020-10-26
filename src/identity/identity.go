@@ -10,17 +10,17 @@ const clientId = "824ce29e-a0bb-4ad5-9d29-90664358f3a2"
 const notSoSecretSecret = "AxxIG_4O6feYwj_ueCN-6-ca8rN24U52sN"
 var scopes []string = []string{"https://graph.microsoft.com/.default"}
 
-func tryClientSecretFlow(confidentialClientApp *msalgo.ConfidentialClientApplication) {
+func tryClientSecretFlow(confidentialClientApp *msalgo.ConfidentialClientApplication) string {
 	clientSecretParams := msalgo.CreateAcquireTokenClientCredentialParameters(scopes)
 	result, err := confidentialClientApp.AcquireTokenByClientCredential(clientSecretParams)
 	if err != nil {
 		log.Fatal(err)
 	}
-	accessToken := result.GetAccessToken()
-	log.Info("Access token is: " + accessToken)
+
+	return result.GetAccessToken()
 }
 
-func AcquireTokenClientSecret() {
+func AcquireTokenClientSecret() string {
 	secret, err := msalgo.CreateClientCredentialFromSecret(notSoSecretSecret)
 	if err != nil {
 		log.Fatal(err)
@@ -36,10 +36,9 @@ func AcquireTokenClientSecret() {
 	result, err := confidentialClientApp.AcquireTokenSilent(silentParams)
 	if err != nil {
 		log.Info(err)
-		tryClientSecretFlow(confidentialClientApp)
+		return tryClientSecretFlow(confidentialClientApp)
 	} else {
-		accessToken := result.GetAccessToken()
-		log.Info("Access token is: " + accessToken)
+		return result.GetAccessToken()
 	}
 
 }

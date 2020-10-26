@@ -1,7 +1,6 @@
 package handlers
 
 import (	
-	"os"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -45,8 +44,9 @@ func GetBuildsHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 	}
 
-	// Get ADO token
-	token := os.Getenv("ADO_TOKEN")
+	// Get an access token
+	//TODO: Our app registration probably needs some delegated permissions configured to call ADO.
+	var token = identity.AcquireTokenClientSecret()
 
 	// Set necessary API request headers
 	adoReq.Header.Set("Authorization", fmt.Sprintf("Basic %s", helpers.EncodeToBase64(token)))
@@ -102,18 +102,6 @@ func CorsHandler(r *mux.Router) mux.MiddlewareFunc {
 			default:
 				w.Header().Set("Access-Control-Allow-Origin", "https://backstage.dfds.cloud")
 			}
-
-			next.ServeHTTP(w, req)
-		})
-	}
-}
-
-func OAuth2Handler(r *mux.Router) mux.MiddlewareFunc {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-			println("Fetching confidential token");
-
-			identity.AcquireTokenClientSecret();
 
 			next.ServeHTTP(w, req)
 		})
